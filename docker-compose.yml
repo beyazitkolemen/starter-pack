@@ -1,0 +1,31 @@
+version: '3.3'
+services:
+  redis:
+    image: redis:alpine
+    container_name: starterpack-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - artf4_net
+  mysql:
+    image: mysql:8.0.31
+    container_name: starterpack-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: starterpack
+      MYSQL_DATABASE: starterpack
+      MYSQL_USER: starterpack
+      MYSQL_PASSWORD: starterpack
+    networks:
+      - artf4_net
+volumes:
+  mysql_data:
+  redis_data:
+networks:
+  artf4_net:
+    driver: "bridge"
