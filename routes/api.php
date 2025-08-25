@@ -27,9 +27,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
+Route::prefix('blogs')->group(function () {
+
  // Blog Routes - 5 temel endpoint
- Route::post('/blogs', CreateBlogController::class);           // CREATE
- Route::get('/blogs', ListBlogsController::class);            // LIST
- Route::get('/blogs/{slug}', GetBlogController::class);       // SINGLE (slug ile)
- Route::put('/blogs/{blogId}', UpdateBlogController::class);  // UPDATE
- Route::delete('/blogs/{blogId}', DeleteBlogController::class); // DELETE
+ Route::post('/', CreateBlogController::class);           // CREATE
+ Route::get('/', ListBlogsController::class);            // LIST
+ Route::get('/{slug}', GetBlogController::class);       // SINGLE (slug ile)
+ Route::put('/{blogId}', UpdateBlogController::class);  // UPDATE
+ Route::delete('/{blogId}', DeleteBlogController::class); // DELETE
+});
