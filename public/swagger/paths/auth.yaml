@@ -1,7 +1,7 @@
 /register:
   post:
     tags:
-      - Authentication
+      - Kullanıcı
     summary: Kullanıcı kaydı
     description: Yeni kullanıcı hesabı oluşturur ve authentication token döner
     operationId: registerUser
@@ -71,7 +71,7 @@
 /login:
   post:
     tags:
-      - Authentication
+      - Kullanıcı
     summary: Kullanıcı girişi
     description: Mevcut kullanıcı ile giriş yapar ve authentication token döner
     operationId: loginUser
@@ -140,7 +140,7 @@
 /logout:
   post:
     tags:
-      - Authentication
+      - Kullanıcı
     summary: Kullanıcı çıkışı
     description: Mevcut authentication token'ı geçersiz kılar
     operationId: logoutUser
@@ -170,7 +170,7 @@
 /user:
   get:
     tags:
-      - Authentication
+      - Kullanıcı
     summary: Kullanıcı bilgileri
     description: Mevcut giriş yapmış kullanıcının bilgilerini döner
     operationId: getUserInfo
