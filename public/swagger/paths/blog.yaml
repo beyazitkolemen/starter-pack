@@ -1,53 +1,5 @@
 # Blog API Endpoints
 
-# Create Blog
-post:
-  tags:
-    - Blog
-  summary: Yeni blog oluştur
-  description: Kullanıcı girişi yapılmış olmalı
-  security:
-    - bearerAuth: []
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '../schemas/blog-create.yaml'
-        example:
-          title: "Laravel ile DDD Mimarisi"
-          content: "Bu makalede Laravel framework kullanarak Domain-Driven Design (DDD) mimarisini nasıl uygulayacağımızı öğreneceğiz..."
-          category_id: 1
-          excerpt: "Laravel framework kullanarak DDD mimarisini nasıl uygulayacağımızı öğrenin."
-          featured_image: "https://example.com/image.jpg"
-          tags: [1, 2, 3]
-          status: "draft"
-  responses:
-    '201':
-      description: Blog başarıyla oluşturuldu
-      content:
-        application/json:
-          schema:
-            $ref: '../schemas/blog-response.yaml'
-    '400':
-      description: Validation hatası
-      content:
-        application/json:
-          schema:
-            $ref: '../schemas/validation-error.yaml'
-    '401':
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '../schemas/unauthorized-error.yaml'
-    '500':
-      description: Server hatası
-      content:
-        application/json:
-          schema:
-            $ref: '../schemas/server-error.yaml'
-
 # List Blogs
 get:
   tags:
