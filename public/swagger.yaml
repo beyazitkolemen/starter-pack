@@ -1,0 +1,322 @@
+openapi: 3.0.3
+info:
+  title: Laravel StarterPack API
+  description: Laravel StarterPack API endpoint'leri
+  version: 1.0.0
+  contact:
+    name: Beyazıt Kölemen
+    email: beyazit@artf4.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://starter-pack.test/api
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /register:
+    post:
+      tags:
+        - Authentication
+      summary: Kullanıcı kaydı
+      description: Yeni kullanıcı hesabı oluşturur ve authentication token döner
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                  description: Kullanıcının tam adı
+                  example: "John Doe"
+                  maxLength: 255
+                email:
+                  type: string
+                  format: email
+                  description: Kullanıcının email adresi
+                  example: "test@artf4.com"
+                  maxLength: 255
+                password:
+                  type: string
+                  description: Kullanıcının şifresi
+                  example: "password123"
+                  minLength: 8
+                password_confirmation:
+                  type: string
+                  description: Şifre onayı
+                  example: "password123"
+                  minLength: 8
+      responses:
+        '201':
+          description: Kullanıcı başarıyla oluşturuldu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Kullanıcı başarıyla oluşturuldu"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+                        description: Authentication token
+                        example: "1|abc123def456ghi789..."
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Validation error"
+                  errors:
+                    type: object
+                    properties:
+                      name:
+                        type: array
+                        items:
+                          type: string
+                        example: ["İsim alanı zorunludur"]
+                      email:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Bu email adresi zaten kullanılıyor"]
+                      password:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Şifre en az 8 karakter olmalıdır"]
+
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Kullanıcı girişi
+      description: Mevcut kullanıcı ile giriş yapar ve authentication token döner
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Kullanıcının email adresi
+                  example: "beyazit@artf4.com"
+                password:
+                  type: string
+                  description: Kullanıcının şifresi
+                  example: "12345678"
+      responses:
+        '200':
+          description: Başarılı giriş
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Başarılı giriş"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+                        description: Authentication token
+                        example: "1|abc123def456ghi789..."
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Geçersiz kimlik bilgileri"
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /logout:
+    post:
+      tags:
+        - Authentication
+      summary: Kullanıcı çıkışı
+      description: Mevcut authentication token'ı geçersiz kılar
+      operationId: logoutUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Başarılı çıkış
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Başarılı çıkış"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  /user:
+    get:
+      tags:
+        - Authentication
+      summary: Kullanıcı bilgileri
+      description: Mevcut giriş yapmış kullanıcının bilgilerini döner
+      operationId: getUserInfo
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Kullanıcı bilgileri
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Kullanıcı ID'si
+          example: 1
+        name:
+          type: string
+          description: Kullanıcının tam adı
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          description: Kullanıcının email adresi
+          example: "john@example.com"
+        email_verified_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Email doğrulama tarihi
+          example: "2024-01-01T00:00:00.000000Z"
+        created_at:
+          type: string
+          format: date-time
+          description: Hesap oluşturma tarihi
+          example: "2024-01-01T00:00:00.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Son güncelleme tarihi
+          example: "2024-01-01T00:00:00.000000Z"
+      required:
+        - id
+        - name
+        - email
+        - created_at
+        - updated_at
+
+    ValidationError:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+        message:
+          type: string
+          example: "Validation error"
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            field_name: ["Hata mesajı"]
+
+    UnauthorizedError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Unauthenticated."
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer token authentication
+
+tags:
+  - name: Authentication
+    description: Kullanıcı kimlik doğrulama işlemleri
+
