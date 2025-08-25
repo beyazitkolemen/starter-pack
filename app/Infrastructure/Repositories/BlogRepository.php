@@ -73,7 +73,7 @@ class BlogRepository implements BlogRepositoryInterface
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'blogs' => $blogs->items(),
+            'blogs' => collect($blogs->items())->map(fn($blog) => $blog->toDomainEntity())->toArray(),
             'pagination' => [
                 'current_page' => $blogs->currentPage(),
                 'last_page' => $blogs->lastPage(),
@@ -92,7 +92,7 @@ class BlogRepository implements BlogRepositoryInterface
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'blogs' => $blogs->items(),
+            'blogs' => collect($blogs->items())->map(fn($blog) => $blog->toDomainEntity())->toArray(),
             'pagination' => [
                 'current_page' => $blogs->currentPage(),
                 'last_page' => $blogs->lastPage(),
@@ -113,7 +113,7 @@ class BlogRepository implements BlogRepositoryInterface
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'blogs' => $blogs->items(),
+            'blogs' => collect($blogs->items())->map(fn($blog) => $blog->toDomainEntity())->toArray(),
             'pagination' => [
                 'current_page' => $blogs->currentPage(),
                 'last_page' => $blogs->lastPage(),
@@ -132,7 +132,7 @@ class BlogRepository implements BlogRepositoryInterface
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'blogs' => $blogs->items(),
+            'blogs' => collect($blogs->items())->map(fn($blog) => $blog->toDomainEntity())->toArray(),
             'pagination' => [
                 'current_page' => $blogs->currentPage(),
                 'last_page' => $blogs->lastPage(),
@@ -151,7 +151,7 @@ class BlogRepository implements BlogRepositoryInterface
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'blogs' => $blogs->items(),
+            'blogs' => collect($blogs->items())->map(fn($blog) => $blog->toDomainEntity())->toArray(),
             'pagination' => [
                 'current_page' => $blogs->currentPage(),
                 'last_page' => $blogs->lastPage(),

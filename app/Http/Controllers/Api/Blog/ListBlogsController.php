@@ -26,23 +26,26 @@ class ListBlogsController extends Controller
             $featured = $request->get('featured');
             $popular = $request->get('popular');
 
-            $blogs = [];
+            $result = [];
 
             if ($search) {
-                $blogs = $this->blogService->searchBlogs($search, $page, $perPage);
+                $result = $this->blogService->searchBlogs($search, $page, $perPage);
             } elseif ($categoryId) {
-                $blogs = $this->blogService->getBlogsByCategory($categoryId, $page, $perPage);
+                $result = $this->blogService->getBlogsByCategory($categoryId, $page, $perPage);
             } elseif ($tagId) {
-                $blogs = $this->blogService->getBlogsByTag($tagId, $page, $perPage);
+                $result = $this->blogService->getBlogsByTag($tagId, $page, $perPage);
             } elseif ($featured) {
                 $blogs = $this->blogService->getFeaturedBlogs($perPage);
+                $result = ['blogs' => $blogs, 'pagination' => []];
             } elseif ($popular) {
                 $blogs = $this->blogService->getPopularBlogs($perPage);
+                $result = ['blogs' => $blogs, 'pagination' => []];
             } else {
-                $blogs = $this->blogService->getPublishedBlogs($page, $perPage);
+                $result = $this->blogService->getPublishedBlogs($page, $perPage);
             }
 
-            $pagination = [
+            $blogs = $result['blogs'] ?? [];
+            $pagination = $result['pagination'] ?? [
                 'current_page' => $page,
                 'per_page' => $perPage,
                 'total' => count($blogs),
