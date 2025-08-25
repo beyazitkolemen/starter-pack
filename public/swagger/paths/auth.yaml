@@ -1,4 +1,7 @@
-/register:
+# Auth API Endpoints
+
+# Register User
+register:
   post:
     tags:
       - Kullanıcı
@@ -68,7 +71,8 @@
             schema:
               $ref: '../schemas/validation-error.yaml'
 
-/login:
+# Login User
+login:
   post:
     tags:
       - Kullanıcı
@@ -137,7 +141,8 @@
             schema:
               $ref: '../schemas/validation-error.yaml'
 
-/logout:
+# Logout User
+logout:
   post:
     tags:
       - Kullanıcı
@@ -167,7 +172,8 @@
             schema:
               $ref: '../schemas/unauthorized-error.yaml'
 
-/user:
+# Get User Info
+user:
   get:
     tags:
       - Kullanıcı

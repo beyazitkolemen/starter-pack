@@ -1,0 +1,119 @@
+type: object
+properties:
+  status:
+    type: string
+    example: "success"
+  data:
+    type: object
+    properties:
+      blogs:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: Blog ID'si
+              example: 1
+            title:
+              type: string
+              description: Blog başlığı
+              example: "Laravel ile DDD Mimarisi"
+            slug:
+              type: string
+              description: Blog slug'ı
+              example: "laravel-ile-ddd-mimarisi"
+            excerpt:
+              type: string
+              nullable: true
+              description: Blog özeti
+              example: "Laravel framework kullanarak DDD mimarisini..."
+            featured_image:
+              type: string
+              nullable: true
+              description: Öne çıkan resim URL'si
+              example: "https://example.com/image.jpg"
+            status:
+              type: object
+              properties:
+                value:
+                  type: string
+                  enum: [draft, published, archived]
+                  example: "published"
+                label:
+                  type: string
+                  example: "Yayınlandı"
+                color:
+                  type: string
+                  example: "green"
+            author:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: "Beyazıt Kölemen"
+            category:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: "Yazılım Geliştirme"
+                slug:
+                  type: string
+                  example: "yazilim-gelistirme"
+            tags:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: "Laravel"
+                  slug:
+                    type: string
+                    example: "laravel"
+            published_at:
+              type: string
+              format: date-time
+              nullable: true
+              example: "2025-01-01 12:00:00"
+            created_at:
+              type: string
+              format: date-time
+              example: "2025-01-01 10:00:00"
+            view_count:
+              type: integer
+              description: Görüntülenme sayısı
+              example: 150
+            is_featured:
+              type: boolean
+              description: Öne çıkan blog mu?
+              example: true
+            word_count:
+              type: integer
+              description: Kelime sayısı
+              example: 1250
+      pagination:
+        type: object
+        properties:
+          current_page:
+            type: integer
+            description: Mevcut sayfa numarası
+            example: 1
+          per_page:
+            type: integer
+            description: Sayfa başına blog sayısı
+            example: 10
+          total:
+            type: integer
+            description: Toplam blog sayısı
+            example: 25

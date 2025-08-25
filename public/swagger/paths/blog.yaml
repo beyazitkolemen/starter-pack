@@ -1,0 +1,124 @@
+# Blog API Endpoints
+
+# Create Blog
+post:
+  tags:
+    - Blog
+  summary: Yeni blog oluştur
+  description: Kullanıcı girişi yapılmış olmalı
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/blog-create.yaml'
+        example:
+          title: "Laravel ile DDD Mimarisi"
+          content: "Bu makalede Laravel framework kullanarak Domain-Driven Design (DDD) mimarisini nasıl uygulayacağımızı öğreneceğiz..."
+          category_id: 1
+          excerpt: "Laravel framework kullanarak DDD mimarisini nasıl uygulayacağımızı öğrenin."
+          featured_image: "https://example.com/image.jpg"
+          tags: [1, 2, 3]
+          status: "draft"
+  responses:
+    '201':
+      description: Blog başarıyla oluşturuldu
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/blog-response.yaml'
+    '400':
+      description: Validation hatası
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/validation-error.yaml'
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/unauthorized-error.yaml'
+    '500':
+      description: Server hatası
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/server-error.yaml'
+
+# List Blogs
+get:
+  tags:
+    - Blog
+  summary: Blog listesini getir
+  description: Filtreleme ve sayfalama ile blog listesi
+  parameters:
+    - name: page
+      in: query
+      description: Sayfa numarası
+      required: false
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    - name: per_page
+      in: query
+      description: Sayfa başına blog sayısı
+      required: false
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
+    - name: status
+      in: query
+      description: Blog durumu
+      required: false
+      schema:
+        type: string
+        enum: [draft, published, archived]
+    - name: category_id
+      in: query
+      description: Kategori ID'si
+      required: false
+      schema:
+        type: integer
+    - name: tag_id
+      in: query
+      description: Tag ID'si
+      required: false
+      schema:
+        type: integer
+    - name: search
+      in: query
+      description: Arama terimi
+      required: false
+      schema:
+        type: string
+    - name: featured
+      in: query
+      description: Sadece öne çıkan blog'lar
+      required: false
+      schema:
+        type: boolean
+    - name: popular
+      in: query
+      description: Sadece popüler blog'lar
+      required: false
+      schema:
+        type: boolean
+  responses:
+    '200':
+      description: Blog listesi başarıyla getirildi
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/blog-list-response.yaml'
+    '500':
+      description: Server hatası
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/server-error.yaml'

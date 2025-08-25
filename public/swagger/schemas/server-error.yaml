@@ -5,7 +5,7 @@ properties:
     example: "error"
   message:
     type: string
-    example: "Unauthorized access"
+    example: "Blog oluşturulurken bir hata oluştu"
 required:
   - status
   - message

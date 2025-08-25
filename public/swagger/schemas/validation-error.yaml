@@ -1,17 +1,21 @@
-ValidationError:
-  type: object
-  properties:
-    status:
-      type: string
-      example: "error"
-    message:
-      type: string
-      example: "Validation error"
-    errors:
-      type: object
-      additionalProperties:
-        type: array
-        items:
-          type: string
-      example:
-        field_name: ["Hata mesajı"]
+type: object
+properties:
+  status:
+    type: string
+    example: "error"
+  message:
+    type: string
+    example: "Validation failed"
+  errors:
+    type: object
+    description: Validation error details
+    additionalProperties:
+      type: array
+      items:
+        type: string
+    example:
+      email: ["The email field is required."]
+      password: ["The password must be at least 8 characters."]
+required:
+  - status
+  - message

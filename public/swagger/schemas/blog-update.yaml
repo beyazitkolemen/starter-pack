@@ -1,0 +1,38 @@
+type: object
+description: Tüm alanlar opsiyonel, sadece güncellenecek alanlar gönderilmeli
+properties:
+  title:
+    type: string
+    maxLength: 255
+    description: Blog başlığı
+    example: "Güncellenmiş Blog Başlığı"
+  content:
+    type: string
+    minLength: 10
+    description: Blog içeriği (en az 10 karakter)
+    example: "Güncellenmiş blog içeriği..."
+  category_id:
+    type: integer
+    description: Kategori ID'si
+    example: 2
+  excerpt:
+    type: string
+    maxLength: 500
+    description: Blog özeti
+    example: "Güncellenmiş özet"
+  featured_image:
+    type: string
+    maxLength: 255
+    description: Öne çıkan resim URL'si
+    example: "https://example.com/new-image.jpg"
+  tags:
+    type: array
+    description: Tag ID'leri listesi
+    items:
+      type: integer
+    example: [1, 4, 5]
+  status:
+    type: string
+    enum: [draft, published, archived]
+    description: Blog durumu
+    example: "published"

@@ -1,29 +1,501 @@
 openapi: 3.0.3
 info:
-  title: Laravel StarterPack API
-  description: Laravel StarterPack API endpoint'leri
+  title: Blog API
+  description: DDD mimarisi ile geliştirilmiş blog sistemi API'si
   version: 1.0.0
   contact:
     name: Beyazıt Kölemen
     email: beyazit@artf4.com
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
+    url: https://artf4.com
 
 servers:
-  - url: http://starter-pack.test/api
-    description: Development server
+  - url: http://localhost:8000/api
+    description: Local Development Server
   - url: https://api.example.com
-    description: Production server
+    description: Production Server
 
 paths:
-  $ref: './paths/auth.yaml'
+  /register:
+    post:
+      tags:
+        - Kullanıcı
+      summary: Kullanıcı kaydı
+      description: Yeni kullanıcı hesabı oluşturur ve authentication token döner
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                  description: Kullanıcının tam adı
+                  example: "John Doe"
+                  maxLength: 255
+                email:
+                  type: string
+                  format: email
+                  description: Kullanıcının email adresi
+                  example: "test@artf4.com"
+                  maxLength: 255
+                password:
+                  type: string
+                  description: Kullanıcının şifresi
+                  example: "password123"
+                  minLength: 8
+                password_confirmation:
+                  type: string
+                  description: Şifre onayı
+                  example: "password123"
+                  minLength: 8
+      responses:
+        '201':
+          description: Kullanıcı başarıyla oluşturuldu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Kullanıcı başarıyla oluşturuldu"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+                        description: Authentication token
+                        example: "1|abc123def456ghi789..."
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /login:
+    post:
+      tags:
+        - Kullanıcı
+      summary: Kullanıcı girişi
+      description: Mevcut kullanıcı ile giriş yapar ve authentication token döner
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Kullanıcının email adresi
+                  example: "beyazit@artf4.com"
+                password:
+                  type: string
+                  description: Kullanıcının şifresi
+                  example: "12345678"
+      responses:
+        '200':
+          description: Başarılı giriş
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Başarılı giriş"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+                        description: Authentication token
+                        example: "1|abc123def456ghi789..."
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Geçersiz kimlik bilgileri"
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /logout:
+    post:
+      tags:
+        - Kullanıcı
+      summary: Kullanıcı çıkışı
+      description: Mevcut authentication token'ı geçersiz kılar
+      operationId: logoutUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Başarılı çıkış
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Başarılı çıkış"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  /user:
+    get:
+      tags:
+        - Kullanıcı
+      summary: Kullanıcı bilgileri
+      description: Mevcut giriş yapmış kullanıcının bilgilerini döner
+      operationId: getUserInfo
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Kullanıcı bilgileri
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  /blogs:
+    post:
+      tags:
+        - Blog
+      summary: Yeni blog oluştur
+      description: Kullanıcı girişi yapılmış olmalı
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogCreate'
+      responses:
+        '201':
+          description: Blog başarıyla oluşturuldu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogResponse'
+        '400':
+          description: Validation hatası
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Server hatası
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+
+    get:
+      tags:
+        - Blog
+      summary: Blog listesini getir
+      description: Filtreleme ve sayfalama ile blog listesi
+      parameters:
+        - name: page
+          in: query
+          description: Sayfa numarası
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: per_page
+          in: query
+          description: Sayfa başına blog sayısı
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+        - name: status
+          in: query
+          description: Blog durumu
+          required: false
+          schema:
+            type: string
+            enum: [draft, published, archived]
+        - name: category_id
+          in: query
+          description: Kategori ID'si
+          required: false
+          schema:
+            type: integer
+        - name: tag_id
+          in: query
+          description: Tag ID'si
+          required: false
+          schema:
+            type: integer
+        - name: search
+          in: query
+          description: Arama terimi
+          required: false
+          schema:
+            type: string
+        - name: featured
+          in: query
+          description: Sadece öne çıkan blog'lar
+          required: false
+          schema:
+            type: boolean
+        - name: popular
+          in: query
+          description: Sadece popüler blog'lar
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Blog listesi başarıyla getirildi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogListResponse'
+        '500':
+          description: Server hatası
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+
+  /blogs/{slug}:
+    get:
+      tags:
+        - Blog
+      summary: Tek blog getir
+      description: Slug ile blog detayını getir
+      parameters:
+        - name: slug
+          in: path
+          description: Blog slug'ı
+          required: true
+          schema:
+            type: string
+          example: "laravel-ile-ddd-mimarisi"
+      responses:
+        '200':
+          description: Blog başarıyla getirildi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogResponse'
+        '404':
+          description: Blog bulunamadı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '500':
+          description: Server hatası
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+
+  /blogs/{blogId}:
+    put:
+      tags:
+        - Blog
+      summary: Blog güncelle
+      description: Kullanıcı girişi yapılmış olmalı
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: blogId
+          in: path
+          description: Blog ID'si
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogUpdate'
+      responses:
+        '200':
+          description: Blog başarıyla güncellendi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogResponse'
+        '400':
+          description: Validation hatası
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '404':
+          description: Blog bulunamadı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '500':
+          description: Server hatası
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+
+    delete:
+      tags:
+        - Blog
+      summary: Blog sil
+      description: Kullanıcı girişi yapılmış olmalı
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: blogId
+          in: path
+          description: Blog ID'si
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Blog başarıyla silindi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Blog başarıyla silindi"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '404':
+          description: Blog bulunamadı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '500':
+          description: Server hatası
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
 
 components:
-  schemas:
-    $ref: './schemas/index.yaml'
   securitySchemes:
-    $ref: './security/index.yaml'
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Laravel Sanctum token
+
+  schemas:
+    User:
+      $ref: './schemas/user.yaml'
+    BlogCreate:
+      $ref: './schemas/blog-create.yaml'
+    BlogUpdate:
+      $ref: './schemas/blog-update.yaml'
+    BlogResponse:
+      $ref: './schemas/blog-response.yaml'
+    BlogListResponse:
+      $ref: './schemas/blog-list-response.yaml'
+    ValidationError:
+      $ref: './schemas/validation-error.yaml'
+    UnauthorizedError:
+      $ref: './schemas/unauthorized-error.yaml'
+    NotFoundError:
+      $ref: './schemas/not-found-error.yaml'
+    ServerError:
+      $ref: './schemas/server-error.yaml'
 
 tags:
-  $ref: './tags/index.yaml'
+  - name: Kullanıcı
+    description: Kimlik doğrulama işlemleri
+  - name: Blog
+    description: Blog yönetimi işlemleri

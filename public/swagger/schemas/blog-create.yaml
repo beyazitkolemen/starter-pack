@@ -1,0 +1,42 @@
+type: object
+required:
+  - title
+  - content
+  - category_id
+properties:
+  title:
+    type: string
+    maxLength: 255
+    description: Blog başlığı
+    example: "Laravel ile DDD Mimarisi"
+  content:
+    type: string
+    minLength: 10
+    description: Blog içeriği (en az 10 karakter)
+    example: "Bu makalede Laravel framework kullanarak Domain-Driven Design (DDD) mimarisini nasıl uygulayacağımızı öğreneceğiz..."
+  category_id:
+    type: integer
+    description: Kategori ID'si
+    example: 1
+  excerpt:
+    type: string
+    maxLength: 500
+    description: Blog özeti (opsiyonel)
+    example: "Laravel framework kullanarak DDD mimarisini nasıl uygulayacağımızı öğrenin."
+  featured_image:
+    type: string
+    maxLength: 255
+    description: Öne çıkan resim URL'si (opsiyonel)
+    example: "https://example.com/image.jpg"
+  tags:
+    type: array
+    description: Tag ID'leri listesi (opsiyonel)
+    items:
+      type: integer
+    example: [1, 2, 3]
+  status:
+    type: string
+    enum: [draft, published, archived]
+    default: draft
+    description: Blog durumu
+    example: "draft"

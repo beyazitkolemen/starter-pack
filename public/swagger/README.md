@@ -1,58 +1,73 @@
-# Swagger API Dokümantasyonu
+# Blog API Swagger Documentation
 
-Bu klasör, Laravel StarterPack API'sinin Swagger dokümantasyonunu içerir. Dosyalar modüler bir yapıda organize edilmiştir.
+Bu klasör, Blog API'si için Swagger/OpenAPI 3.0 dokümantasyonunu içerir.
 
 ## Dosya Yapısı
 
 ```
 swagger/
-├── main.yaml              # Ana Swagger dosyası
-├── paths/                 # API endpoint'leri
-│   └── auth.yaml         # Authentication endpoint'leri
+├── main.yaml              # Ana OpenAPI dosyası
+├── paths/                 # API endpoint tanımları
+│   ├── auth.yaml         # Kimlik doğrulama endpoint'leri
+│   ├── blog.yaml         # Blog CRUD endpoint'leri
+│   └── blog-detail.yaml  # Blog detay işlemleri
 ├── schemas/               # Veri modelleri
-│   ├── index.yaml        # Tüm schema'ları birleştiren dosya
-│   ├── user.yaml         # User modeli
-│   ├── validation-error.yaml  # Validation error modeli
-│   └── unauthorized-error.yaml # Unauthorized error modeli
-├── security/              # Güvenlik tanımları
-│   └── index.yaml        # Security scheme'leri
-├── tags/                  # API tag'leri
-│   └── index.yaml        # Tag tanımları
+│   ├── blog-create.yaml  # Blog oluşturma şeması
+│   ├── blog-update.yaml  # Blog güncelleme şeması
+│   ├── blog-response.yaml # Blog response şeması
+│   ├── blog-list-response.yaml # Blog listesi response şeması
+│   ├── validation-error.yaml # Validation hatası şeması
+│   ├── unauthorized-error.yaml # Yetkisiz erişim hatası şeması
+│   ├── not-found-error.yaml # Bulunamadı hatası şeması
+│   └── server-error.yaml # Server hatası şeması
 └── README.md              # Bu dosya
 ```
 
+## API Endpoints
+
+### Blog Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/blogs` | Yeni blog oluştur | ✅ |
+| GET | `/blogs` | Blog listesini getir | ❌ |
+| GET | `/blogs/{slug}` | Tek blog getir | ❌ |
+| PUT | `/blogs/{blogId}` | Blog güncelle | ✅ |
+| DELETE | `/blogs/{blogId}` | Blog sil | ✅ |
+
+### Auth Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/register` | Kullanıcı kaydı | ❌ |
+| POST | `/login` | Kullanıcı girişi | ❌ |
+| POST | `/logout` | Kullanıcı çıkışı | ✅ |
+| GET | `/user` | Kullanıcı profili | ✅ |
+
 ## Kullanım
 
-Ana Swagger dosyası `main.yaml`'dir. Bu dosya diğer tüm dosyaları referans olarak kullanır.
+1. **Swagger UI**: `http://localhost:8000/api-docs.html` adresinden erişebilirsiniz
+2. **OpenAPI Spec**: `http://localhost:8000/swagger/main.yaml` adresinden OpenAPI spesifikasyonunu indirebilirsiniz
 
-### Yeni Endpoint Ekleme
+## Özellikler
 
-1. `paths/` klasöründe yeni bir dosya oluşturun (örn: `users.yaml`)
-2. Ana `main.yaml` dosyasında paths bölümüne referans ekleyin:
+- **Bearer Token Authentication**: Laravel Sanctum ile JWT token desteği
+- **Comprehensive Schemas**: Tüm request/response modelleri tanımlanmış
+- **Error Handling**: Detaylı hata kodları ve mesajları
+- **Interactive Testing**: Swagger UI üzerinden API test edebilme
+- **Turkish Language**: Türkçe açıklamalar ve örnekler
 
-```yaml
-paths:
-  $ref: './swagger/paths/auth.yaml'
-  $ref: './swagger/paths/users.yaml'  # Yeni eklenen
-```
+## Geliştirme
 
-### Yeni Schema Ekleme
+Yeni endpoint eklemek için:
 
-1. `schemas/` klasöründe yeni schema dosyası oluşturun
-2. `schemas/index.yaml` dosyasına referans ekleyin
+1. `paths/` klasöründe yeni path dosyası oluşturun
+2. `schemas/` klasöründe gerekli şemaları tanımlayın
+3. `main.yaml` dosyasında referansları ekleyin
+4. Swagger UI'da test edin
 
-### Yeni Tag Ekleme
+## Notlar
 
-1. `tags/index.yaml` dosyasına yeni tag ekleyin
-
-## Avantajlar
-
-- **Modüler Yapı**: Her endpoint grubu ayrı dosyada
-- **Kolay Bakım**: Küçük, yönetilebilir dosyalar
-- **Takım Çalışması**: Farklı geliştiriciler farklı endpoint'ler üzerinde çalışabilir
-- **Yeniden Kullanım**: Schema'lar farklı endpoint'lerde kullanılabilir
-- **Temiz Kod**: Ana dosya sadece referansları içerir
-
-## Not
-
-Swagger UI'da bu dosyaları görüntülemek için ana `swagger.yaml` dosyasını kullanın. Referanslar otomatik olarak çözülecektir.
+- Tüm blog endpoint'leri DDD mimarisi ile geliştirilmiştir
+- Value Objects, Entities, Services ve Repository pattern kullanılmıştır
+- PHP 8.1+ enum'ları ile type safety sağlanmıştır
