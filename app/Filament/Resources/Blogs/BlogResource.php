@@ -8,6 +8,7 @@ use App\Filament\Resources\Blogs\Pages\ListBlogs;
 use App\Filament\Resources\Blogs\Schemas\BlogForm;
 use App\Filament\Resources\Blogs\Tables\BlogsTable;
 use App\Infrastructure\Models\Blog;
+use App\Filament\Resources\Blogs\RelationManagers\TagsRelationManager;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -35,7 +36,7 @@ class BlogResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TagsRelationManager::class,
         ];
     }
 
