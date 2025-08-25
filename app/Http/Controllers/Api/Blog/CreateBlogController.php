@@ -7,7 +7,6 @@ use App\Http\Requests\Blog\CreateBlogRequest;
 use App\Domain\Blog\Services\BlogService;
 use App\Application\DTOs\Blog\BlogResponseDTO;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CreateBlogController extends Controller
 {

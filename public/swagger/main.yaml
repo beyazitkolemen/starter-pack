@@ -9,7 +9,7 @@ info:
     url: https://artf4.com
 
 servers:
-  - url: http://localhost:8000/api
+  - url: http://starter-pack.test/api
     description: Local Development Server
   - url: https://api.example.com
     description: Production Server
