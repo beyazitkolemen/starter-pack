@@ -2,9 +2,9 @@
 
 Modern Laravel blog uygulaması için kapsamlı bir başlangıç paketi. Domain-Driven Design (DDD) mimarisi, Filament admin paneli ve RESTful API ile geliştirilmiştir.
 
-![Laravel](https://img.shields.io/badge/Laravel-10.x-red.svg)
+![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-blue.svg)
-![Filament](https://img.shields.io/badge/Filament-3.x-orange.svg)
+![Filament](https://img.shields.io/badge/Filament-4.x-orange.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 ## ✨ Özellikler
