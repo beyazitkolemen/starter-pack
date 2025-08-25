@@ -22,8 +22,8 @@ Modern Laravel blog uygulaması için kapsamlı bir başlangıç paketi. Domain-
 
 ## 🛠️ Teknolojiler
 
-- **Backend:** Laravel 10.x, PHP 8.1+
-- **Admin Panel:** Filament 3.x
+- **Backend:** Laravel 12.x, PHP 8.1+
+- **Admin Panel:** Filament 4.x
 - **Database:** MySQL/PostgreSQL
 - **Authentication:** Laravel Sanctum
 - **API Documentation:** Swagger/OpenAPI
