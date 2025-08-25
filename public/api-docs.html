@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Documentation</title>
-    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
-    <script>
-        window.onload = function() {
-            window.ui = SwaggerUIBundle({
-                url: "swagger.yaml",
-                dom_id: '#swagger-ui',
-            });
-        };
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Documentation</title>
+  <!-- Stoplight Elements CDN -->
+  <script src="https://unpkg.com/@stoplight/elements/web-components.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    elements-api {
+      height: 100vh; /* tam ekran */
+    }
+  </style>
 </head>
 <body>
-    <h1>API Documentation</h1>
-    <div id="swagger-ui"></div>
+  <!-- OpenAPI/Swagger dosyasını buraya bağla -->
+  <elements-api
+    apiDescriptionUrl="swagger.yaml"
+    router="hash"
+    layout="sidebar"
+  ></elements-api>
 </body>
 </html>
