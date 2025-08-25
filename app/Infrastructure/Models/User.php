@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Models;
+namespace App\Infrastructure\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +9,6 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -45,5 +43,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Domain entity'ye dönüştür
+     */
+    public function toDomainEntity(): \App\Domain\Auth\Entities\User
+    {
+        return new \App\Domain\Auth\Entities\User([
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password,
+            'email_verified_at' => $this->email_verified_at,
+            'remember_token' => $this->remember_token,
+        ]);
     }
 }

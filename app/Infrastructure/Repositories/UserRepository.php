@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Auth\Repositories\UserRepositoryInterface;
 use App\Domain\Auth\Entities\User;
 use App\Domain\Auth\ValueObjects\Email;
-use App\Models\User as UserModel;
+use App\Infrastructure\Models\User as UserModel;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -31,12 +31,7 @@ class UserRepository implements UserRepositoryInterface
             return null;
         }
 
-        return new User([
-            'id' => $userModel->id,
-            'name' => $userModel->name,
-            'email' => $userModel->email,
-            'password' => $userModel->password,
-        ]);
+        return $userModel->toDomainEntity();
     }
 
     public function findByEmail(Email $email): ?User
@@ -47,12 +42,7 @@ class UserRepository implements UserRepositoryInterface
             return null;
         }
 
-        return new User([
-            'id' => $userModel->id,
-            'name' => $userModel->name,
-            'email' => $userModel->email,
-            'password' => $userModel->password,
-        ]);
+        return $userModel->toDomainEntity();
     }
 
     public function delete(int $id): bool

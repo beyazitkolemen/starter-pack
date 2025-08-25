@@ -5,106 +5,117 @@ namespace App\Domain\Auth\Entities;
 use App\Domain\Auth\ValueObjects\Name;
 use App\Domain\Auth\ValueObjects\Email;
 use App\Domain\Auth\ValueObjects\Password;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User
 {
-    use HasApiTokens;
-
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    private ?Name $nameValueObject = null;
-    private ?Email $emailValueObject = null;
-    private ?Password $passwordValueObject = null;
+    private ?int $id = null;
+    private Name $name;
+    private Email $email;
+    private Password $password;
+    private ?string $emailVerifiedAt = null;
+    private ?string $rememberToken = null;
 
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         if (isset($attributes['name'])) {
-            $this->nameValueObject = new Name($attributes['name']);
+            $this->name = new Name($attributes['name']);
         }
 
         if (isset($attributes['email'])) {
-            $this->emailValueObject = new Email($attributes['email']);
+            $this->email = new Email($attributes['email']);
         }
 
         if (isset($attributes['password'])) {
-            $this->passwordValueObject = new Password($attributes['password']);
+            $this->password = new Password($attributes['password']);
+        }
+
+        if (isset($attributes['id'])) {
+            $this->id = $attributes['id'];
+        }
+
+        if (isset($attributes['email_verified_at'])) {
+            $this->emailVerifiedAt = $attributes['email_verified_at'];
+        }
+
+        if (isset($attributes['remember_token'])) {
+            $this->rememberToken = $attributes['remember_token'];
         }
     }
 
-    public function setName(Name $name): void
+    public function getId(): ?int
     {
-        $this->nameValueObject = $name;
-        $this->attributes['name'] = $name->getValue();
-    }
-
-    public function setEmail(Email $email): void
-    {
-        $this->emailValueObject = $email;
-        $this->attributes['email'] = $email->getValue();
-    }
-
-    public function setPassword(Password $password): void
-    {
-        $this->passwordValueObject = $password;
-        $this->attributes['password'] = $password->hash();
+        return $this->id;
     }
 
     public function getName(): Name
     {
-        if (!$this->nameValueObject) {
-            $this->nameValueObject = new Name($this->attributes['name']);
-        }
-        return $this->nameValueObject;
+        return $this->name;
     }
 
     public function getEmail(): Email
     {
-        if (!$this->emailValueObject) {
-            $this->emailValueObject = new Email($this->attributes['email']);
-        }
-        return $this->emailValueObject;
-    }
-
-    public function verifyPassword(Password $password): bool
-    {
-        return $password->verify($this->attributes['password']);
-    }
-
-    public function setId(int $id): void
-    {
-        $this->attributes['id'] = $id;
+        return $this->email;
     }
 
     public function getPassword(): Password
     {
-        if (!$this->passwordValueObject) {
-            $this->passwordValueObject = new Password($this->attributes['password']);
-        }
-        return $this->passwordValueObject;
+        return $this->password;
     }
 
-    public function revokeCurrentToken(): void
+    public function getEmailVerifiedAt(): ?string
     {
-        if ($this->currentAccessToken()) {
-            $this->currentAccessToken()->delete();
-        }
+        return $this->emailVerifiedAt;
+    }
+
+    public function getRememberToken(): ?string
+    {
+        return $this->rememberToken;
+    }
+
+    public function setName(Name $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function setEmail(Email $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function setPassword(Password $password): void
+    {
+        $this->password = $password;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function setEmailVerifiedAt(?string $emailVerifiedAt): void
+    {
+        $this->emailVerifiedAt = $emailVerifiedAt;
+    }
+
+    public function setRememberToken(?string $rememberToken): void
+    {
+        $this->rememberToken = $rememberToken;
+    }
+
+    public function verifyPassword(Password $password): bool
+    {
+        return $password->verify($this->password->getValue());
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name->getValue(),
+            'email' => $this->email->getValue(),
+            'password' => $this->password->getValue(),
+            'email_verified_at' => $this->emailVerifiedAt,
+            'remember_token' => $this->rememberToken,
+        ];
     }
 }
