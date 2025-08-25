@@ -1,4 +1,4 @@
-# 🚀 Laravel Blog Starter Pack
+# 🚀 Laravel Blog Starter Pack (Eğitim amaçlı)
 
 Modern Laravel blog uygulaması için kapsamlı bir başlangıç paketi. Domain-Driven Design (DDD) mimarisi, Filament admin paneli ve RESTful API ile geliştirilmiştir.
 
