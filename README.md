@@ -1,61 +1,283 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Laravel Blog Starter Pack
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Modern Laravel blog uygulaması için kapsamlı bir başlangıç paketi. Domain-Driven Design (DDD) mimarisi, Filament admin paneli ve RESTful API ile geliştirilmiştir.
 
-## About Laravel
+![Laravel](https://img.shields.io/badge/Laravel-10.x-red.svg)
+![PHP](https://img.shields.io/badge/PHP-8.1+-blue.svg)
+![Filament](https://img.shields.io/badge/Filament-3.x-orange.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Özellikler
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 🏗️ **Domain-Driven Design (DDD)** mimarisi
+- 🎨 **Filament 3** admin paneli
+- 🔐 **Laravel Sanctum** authentication
+- 📝 **Blog yönetim sistemi**
+- 🏷️ **Kategori ve etiket sistemi**
+- 👥 **Kullanıcı yönetimi**
+- 🚀 **RESTful API**
+- 📊 **Swagger/OpenAPI dokümantasyonu**
+- 🎯 **Modern UI/UX tasarımı**
+- 📱 **Responsive tasarım**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Teknolojiler
 
-## Learning Laravel
+- **Backend:** Laravel 10.x, PHP 8.1+
+- **Admin Panel:** Filament 3.x
+- **Database:** MySQL/PostgreSQL
+- **Authentication:** Laravel Sanctum
+- **API Documentation:** Swagger/OpenAPI
+- **Frontend:** Tailwind CSS, Alpine.js
+- **Testing:** PHPUnit
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📋 Gereksinimler
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- PHP 8.1 veya üzeri
+- Composer
+- MySQL 8.0+ veya PostgreSQL 12+
+- Node.js 16+ ve NPM
+- Git
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Kurulum
 
-## Laravel Sponsors
+### 1. Projeyi Klonlayın
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+git clone https://github.com/username/starter-pack.git
+cd starter-pack
+```
 
-### Premium Partners
+### 2. Bağımlılıkları Yükleyin
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+composer install
+npm install
+```
 
-## Contributing
+### 3. Environment Dosyasını Hazırlayın
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+cp .env.example .env
+```
 
-## Code of Conduct
+`.env` dosyasını düzenleyin:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```env
+APP_NAME="Laravel Blog"
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
 
-## Security Vulnerabilities
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel_blog
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Uygulama Anahtarını Oluşturun
 
-## License
+```bash
+php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Veritabanını Hazırlayın
+
+```bash
+php artisan migrate
+php artisan db:seed
+```
+
+### 6. Storage Linkini Oluşturun
+
+```bash
+php artisan storage:link
+```
+
+### 7. Frontend Varlıklarını Derleyin
+
+```bash
+npm run build
+```
+
+### 8. Uygulamayı Başlatın
+
+```bash
+php artisan serve
+```
+
+Tarayıcınızda `http://localhost:8000` adresine gidin.
+
+## 🔐 Admin Paneli
+
+Filament admin paneline erişim:
+
+- **URL:** `http://localhost:8000/admin`
+- **Varsayılan Kullanıcı:** `admin@example.com`
+- **Şifre:** `password`
+
+### Admin Panel Özellikleri
+
+- 📝 **Blog Yönetimi:** Blog yazıları oluşturma, düzenleme, silme
+- 🏷️ **Kategori Yönetimi:** Blog kategorileri
+- 🏷️ **Etiket Yönetimi:** Blog etiketleri
+- 👥 **Kullanıcı Yönetimi:** Kullanıcı hesapları
+- 📊 **Dashboard:** İstatistikler ve genel bakış
+
+## 🌐 API Kullanımı
+
+### Authentication
+
+```bash
+# Giriş
+POST /api/auth/login
+{
+    "email": "user@example.com",
+    "password": "password"
+}
+
+# Kayıt
+POST /api/auth/register
+{
+    "name": "Kullanıcı Adı",
+    "email": "user@example.com",
+    "password": "password",
+    "password_confirmation": "password"
+}
+```
+
+### Blog API Endpoints
+
+```bash
+# Blog listesi
+GET /api/blogs
+
+# Blog detayı
+GET /api/blogs/{id}
+
+# Blog arama
+GET /api/blogs/search?q=arama_terimi
+```
+
+### API Dokümantasyonu
+
+Swagger dokümantasyonuna erişim:
+- **URL:** `http://localhost:8000/api-docs.html`
+
+## 🏗️ Proje Yapısı
+
+```
+starter-pack/
+├── app/
+│   ├── Application/          # Application Layer
+│   │   └── DTOs/            # Data Transfer Objects
+│   ├── Domain/              # Domain Layer
+│   │   ├── Auth/            # Authentication domain
+│   │   ├── Blog/            # Blog domain
+│   │   └── Entities/        # Domain entities
+│   ├── Infrastructure/      # Infrastructure Layer
+│   │   ├── Models/          # Eloquent models
+│   │   └── Repositories/    # Repository implementations
+│   └── Filament/            # Admin panel resources
+├── database/
+│   ├── migrations/          # Database migrations
+│   ├── seeders/             # Database seeders
+│   └── factories/           # Model factories
+├── routes/
+│   ├── api.php              # API routes
+│   └── web.php              # Web routes
+└── public/
+    └── swagger/             # API documentation
+```
+
+## 🧪 Testler
+
+```bash
+# Tüm testleri çalıştır
+php artisan test
+
+# Belirli test dosyasını çalıştır
+php artisan test tests/Feature/BlogTest.php
+
+# Test coverage raporu
+php artisan test --coverage
+```
+
+## 📦 Docker ile Kurulum
+
+```bash
+# Docker container'larını başlat
+docker-compose up -d
+
+# Container'a bağlan
+docker-compose exec app bash
+
+# Migration'ları çalıştır
+php artisan migrate
+```
+
+## 🔧 Geliştirme
+
+### Yeni Blog Kategorisi Ekleme
+
+```bash
+php artisan make:filament-resource Category
+```
+
+### Yeni API Endpoint Ekleme
+
+```bash
+php artisan make:controller Api/BlogController
+```
+
+### Yeni Migration Oluşturma
+
+```bash
+php artisan make:migration create_new_table
+```
+
+## 📚 Öğrenme Kaynakları
+
+- [Laravel Documentation](https://laravel.com/docs)
+- [Filament Documentation](https://filamentphp.com/docs)
+- [Domain-Driven Design](https://martinfowler.com/bliki/DomainDrivenDesign.html)
+- [Laravel Best Practices](https://github.com/alexeymezenin/laravel-best-practices)
+
+## 🤝 Katkıda Bulunma
+
+1. Bu repository'yi fork edin
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
+4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
+5. Pull Request oluşturun
+
+## 📝 Changelog
+
+### v1.0.0 (2025-01-01)
+- İlk sürüm
+- Blog yönetim sistemi
+- Filament admin paneli
+- RESTful API
+- DDD mimarisi
+
+## 📄 Lisans
+
+Bu proje [MIT License](LICENSE) altında lisanslanmıştır.
+
+## 👨‍💻 Geliştirici
+
+**Beyazıt Kolemen**
+- GitHub: [@beyazitkolemen](https://github.com/beyazitkolemen)
+- LinkedIn: [Beyazıt Kolemen](https://linkedin.com/in/beyazitkolemen)
+
+## 🙏 Teşekkürler
+
+- [Laravel Team](https://laravel.com) - Harika framework için
+- [Filament Team](https://filamentphp.com) - Admin paneli için
+- [Tailwind CSS](https://tailwindcss.com) - CSS framework için
+
+---
+
+⭐ Bu projeyi beğendiyseniz yıldız vermeyi unutmayın!
