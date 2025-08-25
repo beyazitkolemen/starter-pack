@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Infrastructure\Models\User;
 use App\Infrastructure\Models\Category;
 use App\Infrastructure\Models\Tag;
+use App\Domain\Blog\Enums\BlogStatus;
 
 class Blog extends Model
 {
@@ -32,6 +33,7 @@ class Blog extends Model
         'published_at' => 'datetime',
         'is_featured' => 'boolean',
         'view_count' => 'integer',
+        'status' => BlogStatus::class,
     ];
 
     protected $dates = [
@@ -60,17 +62,17 @@ class Blog extends Model
     // Scopes
     public function scopePublished($query)
     {
-        return $query->where('status', 'published');
+        return $query->where('status', BlogStatus::PUBLISHED->getValue());
     }
 
     public function scopeDraft($query)
     {
-        return $query->where('status', 'draft');
+        return $query->where('status', BlogStatus::DRAFT->getValue());
     }
 
     public function scopeArchived($query)
     {
-        return $query->where('status', 'archived');
+        return $query->where('status', BlogStatus::ARCHIVED->getValue());
     }
 
     public function scopeFeatured($query)
@@ -110,7 +112,7 @@ class Blog extends Model
             'title' => $this->title,
             'content' => $this->content,
             'slug' => $this->slug,
-            'status' => $this->status,
+            'status' => $this->status->getValue(),
             'excerpt' => $this->excerpt,
             'featured_image' => $this->featured_image,
             'author' => $this->author->toDomainEntity(),

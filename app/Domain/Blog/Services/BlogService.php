@@ -12,7 +12,7 @@ use App\Domain\Auth\Entities\User;
 use App\Domain\Blog\ValueObjects\Title;
 use App\Domain\Blog\ValueObjects\Content;
 use App\Domain\Blog\ValueObjects\Slug;
-use App\Domain\Blog\ValueObjects\Status;
+use App\Domain\Blog\Enums\BlogStatus;
 use App\Domain\Blog\Exceptions\BlogNotFoundException;
 use App\Domain\Blog\Exceptions\CategoryNotFoundException;
 use App\Domain\Blog\Exceptions\TagNotFoundException;
@@ -42,7 +42,7 @@ class BlogService
             'category' => $category,
             'excerpt' => $data['excerpt'] ?? null,
             'featured_image' => $data['featured_image'] ?? null,
-            'status' => $data['status'] ?? 'draft',
+            'status' => $data['status'] ?? BlogStatus::DRAFT->getValue(),
         ]);
 
         // Tags ekle
@@ -121,11 +121,12 @@ class BlogService
             throw new BlogNotFoundException('Blog not found');
         }
 
-        if (!$blog->getStatus()->canTransitionTo('published')) {
-            throw new InvalidBlogStatusException('Blog cannot be published from current status');
+        try {
+            $blog->publish();
+        } catch (\InvalidArgumentException $e) {
+            throw new InvalidBlogStatusException($e->getMessage());
         }
 
-        $blog->publish();
         return $this->blogRepository->save($blog);
     }
 
@@ -147,11 +148,12 @@ class BlogService
             throw new BlogNotFoundException('Blog not found');
         }
 
-        if (!$blog->getStatus()->canTransitionTo('archived')) {
-            throw new InvalidBlogStatusException('Blog cannot be archived from current status');
+        try {
+            $blog->archive();
+        } catch (\InvalidArgumentException $e) {
+            throw new InvalidBlogStatusException($e->getMessage());
         }
 
-        $blog->archive();
         return $this->blogRepository->save($blog);
     }
 

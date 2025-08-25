@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Blog;
 
+use App\Domain\Blog\Enums\BlogStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateBlogRequest extends FormRequest
@@ -21,7 +22,7 @@ class CreateBlogRequest extends FormRequest
             'featured_image' => 'nullable|string|max:255',
             'tags' => 'nullable|array',
             'tags.*' => 'integer|exists:tags,id',
-            'status' => 'nullable|string|in:draft,published,archived',
+            'status' => 'nullable|string|in:' . implode(',', BlogStatus::getAllValues()),
         ];
     }
 
@@ -38,7 +39,7 @@ class CreateBlogRequest extends FormRequest
             'featured_image.max' => 'Öne çıkan resim URL\'si 255 karakterden uzun olamaz.',
             'tags.array' => 'Etiketler dizi formatında olmalıdır.',
             'tags.*.exists' => 'Seçilen etiket bulunamadı.',
-            'status.in' => 'Geçersiz durum değeri.',
+            'status.in' => 'Geçersiz durum değeri. Geçerli değerler: ' . implode(', ', BlogStatus::getAllValues()),
         ];
     }
 }

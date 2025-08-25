@@ -5,7 +5,7 @@ namespace App\Domain\Blog\Entities;
 use App\Domain\Blog\ValueObjects\Title;
 use App\Domain\Blog\ValueObjects\Content;
 use App\Domain\Blog\ValueObjects\Slug;
-use App\Domain\Blog\ValueObjects\Status;
+use App\Domain\Blog\Enums\BlogStatus;
 use App\Domain\Auth\Entities\User;
 use App\Domain\Blog\Entities\Category;
 use App\Domain\Blog\Entities\Tag;
@@ -17,7 +17,7 @@ class Blog
     private Title $title;
     private Content $content;
     private Slug $slug;
-    private Status $status;
+    private BlogStatus $status;
     private ?string $excerpt = null;
     private ?string $featuredImage = null;
     private User $author;
@@ -53,7 +53,9 @@ class Blog
         $this->slug = new Slug($attributes['slug'] ?? $this->generateSlug($attributes['title']));
 
         // Status varsayılan olarak draft
-        $this->status = new Status($attributes['status'] ?? 'draft');
+        $this->status = isset($attributes['status'])
+            ? BlogStatus::fromString($attributes['status'])
+            : BlogStatus::DRAFT;
 
         // Timestamps
         $this->createdAt = new DateTimeImmutable();
@@ -96,20 +98,28 @@ class Blog
 
     public function publish(): void
     {
-        $this->status = new Status('published');
+        if (!$this->status->canTransitionTo(BlogStatus::PUBLISHED)) {
+            throw new \InvalidArgumentException('Blog cannot be published from current status');
+        }
+
+        $this->status = BlogStatus::PUBLISHED;
         $this->publishedAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
     }
 
     public function draft(): void
     {
-        $this->status = new Status('draft');
+        $this->status = BlogStatus::DRAFT;
         $this->updatedAt = new DateTimeImmutable();
     }
 
     public function archive(): void
     {
-        $this->status = new Status('archived');
+        if (!$this->status->canTransitionTo(BlogStatus::ARCHIVED)) {
+            throw new \InvalidArgumentException('Blog cannot be archived from current status');
+        }
+
+        $this->status = BlogStatus::ARCHIVED;
         $this->updatedAt = new DateTimeImmutable();
     }
 
@@ -144,7 +154,7 @@ class Blog
     public function getTitle(): Title { return $this->title; }
     public function getContent(): Content { return $this->content; }
     public function getSlug(): Slug { return $this->slug; }
-    public function getStatus(): Status { return $this->status; }
+    public function getStatus(): BlogStatus { return $this->status; }
     public function getExcerpt(): ?string { return $this->excerpt; }
     public function getFeaturedImage(): ?string { return $this->featuredImage; }
     public function getAuthor(): User { return $this->author; }
@@ -155,9 +165,9 @@ class Blog
     public function getUpdatedAt(): DateTimeImmutable { return $this->updatedAt; }
     public function getViewCount(): int { return $this->viewCount; }
     public function isFeatured(): bool { return $this->isFeatured; }
-    public function isPublished(): bool { return $this->status->getValue() === 'published'; }
-    public function isDraft(): bool { return $this->status->getValue() === 'draft'; }
-    public function isArchived(): bool { return $this->status->getValue() === 'archived'; }
+    public function isPublished(): bool { return $this->status->isPublished(); }
+    public function isDraft(): bool { return $this->status->isDraft(); }
+    public function isArchived(): bool { return $this->status->isArchived(); }
 
     // Setters
     public function setId(int $id): void { $this->id = $id; }

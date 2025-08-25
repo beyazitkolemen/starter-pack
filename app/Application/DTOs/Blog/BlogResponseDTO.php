@@ -12,6 +12,8 @@ class BlogResponseDTO
 
     public function toArray(): array
     {
+        $status = $this->blog->getStatus();
+        
         return [
             'status' => 'success',
             'data' => [
@@ -20,7 +22,12 @@ class BlogResponseDTO
                     'title' => $this->blog->getTitle()->getValue(),
                     'content' => $this->blog->getContent()->getValue(),
                     'slug' => $this->blog->getSlug()->getValue(),
-                    'status' => $this->blog->getStatus()->getValue(),
+                    'status' => [
+                        'value' => $status->getValue(),
+                        'label' => $status->getLabel(),
+                        'color' => $status->getColor(),
+                        'icon' => $status->getIcon(),
+                    ],
                     'excerpt' => $this->blog->getExcerpt(),
                     'featured_image' => $this->blog->getFeaturedImage(),
                     'author' => [
