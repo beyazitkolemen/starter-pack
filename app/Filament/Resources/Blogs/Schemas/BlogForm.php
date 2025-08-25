@@ -19,36 +19,104 @@ class BlogForm
         return $schema
             ->components([
                 Section::make('Blog Bilgileri')
+                    ->description('Blog yazısının temel bilgilerini girin')
+                    ->icon('heroicon-o-document-text')
                     ->schema([
                         TextInput::make('title')
-                            ->required(),
-                        Textarea::make('content')
+                            ->label('Başlık')
+                            ->placeholder('Blog başlığını girin')
                             ->required()
-                            ->columnSpanFull(),
+                            ->maxLength(255)
+                            ->columnSpan(1),
                         TextInput::make('slug')
-                            ->required(),
+                            ->label('URL Kısayolu')
+                            ->placeholder('blog-baslik-ornegi')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpan(1),
+
+                        Textarea::make('excerpt')
+                            ->label('Özet')
+                            ->placeholder('Blog yazısının kısa özetini girin')
+                            ->rows(3)
+                            ->maxLength(500)
+                            ->columnSpanFull(),
+
+                        Textarea::make('content')
+                            ->label('İçerik')
+                            ->placeholder('Blog yazısının detaylı içeriğini girin')
+                            ->required()
+                            ->rows(10)
+                            ->columnSpanFull(),
+                    ])
+                    ->columnSpanFull(),
+
+                Section::make('Kategori ve Etiketler')
+                    ->description('Blog yazısının kategorisini ve etiketlerini seçin')
+                    ->icon('heroicon-o-tag')
+                    ->schema([
+                        Select::make('category_id')
+                            ->label('Kategori')
+                            ->relationship('category', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->placeholder('Kategori seçin')
+                            ->columnSpan(1),
+
+                        Select::make('author_id')
+                            ->label('Yazar')
+                            ->relationship('author', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->placeholder('Yazar seçin')
+                            ->columnSpan(1),
+                    ])
+                    ->columnSpanFull(),
+
+                Section::make('Görsel ve Durum')
+                    ->description('Blog yazısının görselini ve yayın durumunu ayarlayın')
+                    ->icon('heroicon-o-photo')
+                    ->schema([
+                        FileUpload::make('featured_image')
+                            ->label('Öne Çıkan Görsel')
+                            ->image()
+                            ->imageEditor()
+                            ->imageCropAspectRatio('16:9')
+                            ->imageResizeTargetWidth('1200')
+                            ->imageResizeTargetHeight('675')
+                            ->directory('blog-images')
+                            ->placeholder('Görsel seçin veya sürükleyin')
+                            ->columnSpan(1),
 
                         Select::make('status')
+                            ->label('Durum')
                             ->options(BlogStatus::class)
                             ->default('draft')
-                            ->required(),
-                        Textarea::make('excerpt')
-                            ->columnSpanFull(),
-                        FileUpload::make('featured_image')
-                            ->image(),
-                        Select::make('author_id')
-                            ->relationship('author', 'name')
-                            ->required(),
-                        Select::make('category_id')
-                            ->relationship('category', 'name')
-                            ->required(),
-                        DateTimePicker::make('published_at'),
-                        TextInput::make('view_count')
                             ->required()
+                            ->placeholder('Durum seçin')
+                            ->columnSpan(1),
+
+                        DateTimePicker::make('published_at')
+                            ->label('Yayın Tarihi')
+                            ->placeholder('Yayın tarihini seçin')
+                            ->displayFormat('d/m/Y H:i')
+                            ->columnSpan(1),
+
+                        TextInput::make('view_count')
+                            ->label('Görüntülenme Sayısı')
                             ->numeric()
-                            ->default(0),
+                            ->default(0)
+                            ->minValue(0)
+                            ->placeholder('0')
+                            ->columnSpan(1),
+
                         Toggle::make('is_featured')
-                            ->required(),
+                            ->label('Öne Çıkan Blog')
+                            ->helperText('Bu blog yazısı ana sayfada öne çıkarılsın mı?')
+                            ->default(false)
+                            ->columnSpanFull(),
                     ])
                     ->columnSpanFull(),
             ]);

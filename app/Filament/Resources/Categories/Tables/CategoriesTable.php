@@ -8,6 +8,8 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 
 class CategoriesTable
 {
@@ -16,37 +18,79 @@ class CategoriesTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Kategori Adı')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(30)
+                    ->tooltip(fn ($record) => $record->name),
+
                 TextColumn::make('slug')
-                    ->searchable(),
+                    ->label('URL')
+                    ->searchable()
+                    ->limit(25)
+                    ->copyable()
+                    ->tooltip(fn ($record) => $record->slug),
+
                 TextColumn::make('color')
-                    ->searchable(),
+                    ->label('Renk')
+                    ->badge()
+                    ->color('info')
+                    ->limit(10),
+
                 TextColumn::make('icon')
-                    ->searchable(),
+                    ->label('İkon')
+                    ->searchable()
+                    ->limit(20)
+                    ->tooltip(fn ($record) => $record->icon),
+
                 IconColumn::make('is_active')
-                    ->boolean(),
+                    ->label('Durum')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
+
                 TextColumn::make('sort_order')
+                    ->label('Sıralama')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color('warning'),
+
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Oluşturulma')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Güncellenme')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_active')
+                    ->label('Durum')
+                    ->placeholder('Tümü')
+                    ->trueLabel('Aktif')
+                    ->falseLabel('Pasif'),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->label('Düzenle')
+                    ->icon('heroicon-o-pencil'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->label('Seçilenleri Sil')
+                        ->icon('heroicon-o-trash'),
                 ]),
-            ]);
+            ])
+            ->defaultSort('sort_order', 'asc')
+            ->striped()
+            ->paginated([10, 25, 50, 100]);
     }
 }
