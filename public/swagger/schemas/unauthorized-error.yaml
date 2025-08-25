@@ -1,0 +1,6 @@
+UnauthorizedError:
+  type: object
+  properties:
+    message:
+      type: string
+      example: "Unauthenticated."

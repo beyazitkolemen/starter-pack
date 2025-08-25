@@ -17,14 +17,13 @@ servers:
     description: Production server
 
 paths:
-  $ref: './swagger/paths/auth.yaml'
+  $ref: './paths/auth.yaml'
 
 components:
   schemas:
-    $ref: './swagger/schemas/index.yaml'
+    $ref: './schemas/index.yaml'
   securitySchemes:
-    $ref: './swagger/security/index.yaml'
+    $ref: './security/index.yaml'
 
 tags:
-  $ref: './swagger/tags/index.yaml'
-
+  $ref: './tags/index.yaml'

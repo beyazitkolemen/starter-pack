@@ -1,0 +1,8 @@
+User:
+  $ref: './user.yaml'
+
+ValidationError:
+  $ref: './validation-error.yaml'
+
+UnauthorizedError:
+  $ref: './unauthorized-error.yaml'

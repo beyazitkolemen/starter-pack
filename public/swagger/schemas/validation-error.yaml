@@ -1,0 +1,17 @@
+ValidationError:
+  type: object
+  properties:
+    status:
+      type: string
+      example: "error"
+    message:
+      type: string
+      example: "Validation error"
+    errors:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      example:
+        field_name: ["Hata mesajı"]

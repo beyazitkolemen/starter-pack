@@ -1,0 +1,38 @@
+User:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Kullanıcı ID'si
+      example: 1
+    name:
+      type: string
+      description: Kullanıcının tam adı
+      example: "John Doe"
+    email:
+      type: string
+      format: email
+      description: Kullanıcının email adresi
+      example: "john@example.com"
+    email_verified_at:
+      type: string
+      format: date-time
+      nullable: true
+      description: Email doğrulama tarihi
+      example: "2024-01-01T00:00:00.000000Z"
+    created_at:
+      type: string
+      format: date-time
+      description: Hesap oluşturma tarihi
+      example: "2024-01-01T00:00:00.000000Z"
+    updated_at:
+      type: string
+      format: date-time
+      description: Son güncelleme tarihi
+      example: "2024-01-01T00:00:00.000000Z"
+  required:
+    - id
+    - name
+    - email
+    - created_at
+    - updated_at

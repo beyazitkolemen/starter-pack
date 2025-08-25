@@ -1,0 +1,200 @@
+/register:
+  post:
+    tags:
+      - Authentication
+    summary: Kullanıcı kaydı
+    description: Yeni kullanıcı hesabı oluşturur ve authentication token döner
+    operationId: registerUser
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - email
+              - password
+              - password_confirmation
+            properties:
+              name:
+                type: string
+                description: Kullanıcının tam adı
+                example: "John Doe"
+                maxLength: 255
+              email:
+                type: string
+                format: email
+                description: Kullanıcının email adresi
+                example: "test@artf4.com"
+                maxLength: 255
+              password:
+                type: string
+                description: Kullanıcının şifresi
+                example: "password123"
+                minLength: 8
+              password_confirmation:
+                type: string
+                description: Şifre onayı
+                example: "password123"
+                minLength: 8
+    responses:
+      '201':
+        description: Kullanıcı başarıyla oluşturuldu
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "success"
+                message:
+                  type: string
+                  example: "Kullanıcı başarıyla oluşturuldu"
+                data:
+                  type: object
+                  properties:
+                    user:
+                      $ref: '../schemas/user.yaml'
+                    token:
+                      type: string
+                      description: Authentication token
+                      example: "1|abc123def456ghi789..."
+      '422':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/validation-error.yaml'
+
+/login:
+  post:
+    tags:
+      - Authentication
+    summary: Kullanıcı girişi
+    description: Mevcut kullanıcı ile giriş yapar ve authentication token döner
+    operationId: loginUser
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+                description: Kullanıcının email adresi
+                example: "beyazit@artf4.com"
+              password:
+                type: string
+                description: Kullanıcının şifresi
+                example: "12345678"
+    responses:
+      '200':
+        description: Başarılı giriş
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "success"
+                message:
+                  type: string
+                  example: "Başarılı giriş"
+                data:
+                  type: object
+                  properties:
+                    user:
+                      $ref: '../schemas/user.yaml'
+                    token:
+                      type: string
+                      description: Authentication token
+                      example: "1|abc123def456ghi789..."
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "error"
+                message:
+                  type: string
+                  example: "Geçersiz kimlik bilgileri"
+      '422':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/validation-error.yaml'
+
+/logout:
+  post:
+    tags:
+      - Authentication
+    summary: Kullanıcı çıkışı
+    description: Mevcut authentication token'ı geçersiz kılar
+    operationId: logoutUser
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Başarılı çıkış
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "success"
+                message:
+                  type: string
+                  example: "Başarılı çıkış"
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/unauthorized-error.yaml'
+
+/user:
+  get:
+    tags:
+      - Authentication
+    summary: Kullanıcı bilgileri
+    description: Mevcut giriş yapmış kullanıcının bilgilerini döner
+    operationId: getUserInfo
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Kullanıcı bilgileri
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "success"
+                data:
+                  type: object
+                  properties:
+                    user:
+                      $ref: '../schemas/user.yaml'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/unauthorized-error.yaml'
