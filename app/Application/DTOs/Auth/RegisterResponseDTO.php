@@ -18,7 +18,7 @@ class RegisterResponseDTO
             'message' => 'Kullanıcı başarıyla oluşturuldu',
             'data' => [
                 'user' => [
-                    'id' => $this->user->id,
+                    'id' => $this->user->getId(),
                     'name' => $this->user->getName()->getValue(),
                     'email' => $this->user->getEmail()->getValue(),
                 ],

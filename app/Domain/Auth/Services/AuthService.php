@@ -9,6 +9,7 @@ use App\Domain\Auth\ValueObjects\Password;
 use App\Domain\Auth\ValueObjects\Name;
 use App\Domain\Auth\Exceptions\InvalidCredentialsException;
 use App\Domain\Auth\Exceptions\UserNotFoundException;
+use App\Infrastructure\Models\User as UserModel;
 
 class AuthService
 {
@@ -28,21 +29,22 @@ class AuthService
         }
 
         // User entity oluştur
-        $user = new User(
-            $nameValueObject,
-            $emailValueObject,
-            $passwordValueObject
-        );
+        $user = new User([
+            'name' => $name,
+            'email' => $email,
+            'password' => $password
+        ]);
 
         // User'ı kaydet
         $savedUser = $this->userRepository->save($user);
 
-        // Token oluştur
-        $token = $savedUser->createToken('auth_token');
+        // Infrastructure model üzerinden token oluştur
+        $userModel = UserModel::find($savedUser->getId());
+        $tokenResult = $userModel->createToken('auth_token');
 
         return [
             'user' => $savedUser,
-            'token' => $token
+            'token' => $tokenResult->plainTextToken
         ];
     }
 
@@ -61,11 +63,13 @@ class AuthService
             throw new InvalidCredentialsException('Geçersiz kimlik bilgileri');
         }
 
-        $token = $user->createToken('auth_token');
+        // Infrastructure model üzerinden token oluştur
+        $userModel = UserModel::find($user->getId());
+        $tokenResult = $userModel->createToken('auth_token');
 
         return [
             'user' => $user,
-            'token' => $token
+            'token' => $tokenResult->plainTextToken
         ];
     }
 
@@ -77,7 +81,11 @@ class AuthService
             throw new UserNotFoundException('Kullanıcı bulunamadı');
         }
 
-        $user->revokeCurrentToken();
+        // Infrastructure model üzerinden token iptal et
+        $userModel = UserModel::find($userId);
+        if ($userModel && $userModel->currentAccessToken()) {
+            $userModel->currentAccessToken()->delete();
+        }
     }
 
     public function getCurrentUser(int $userId): User

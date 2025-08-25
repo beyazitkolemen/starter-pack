@@ -18,7 +18,7 @@ class LoginResponseDTO
             'message' => 'Başarılı giriş',
             'data' => [
                 'user' => [
-                    'id' => $this->user->id,
+                    'id' => $this->user->getId(),
                     'name' => $this->user->getName()->getValue(),
                     'email' => $this->user->getEmail()->getValue(),
                 ],

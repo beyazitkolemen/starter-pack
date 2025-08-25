@@ -1,25 +1,36 @@
-# Domain-Driven Design (DDD) Mimarisi
+# Domain-Driven Design (DDD) Architecture
 
-Bu proje, Laravel framework'ü kullanarak Domain-Driven Design (DDD) prensiplerine uygun şekilde yapılandırılmıştır.
+Bu proje, Laravel framework kullanılarak Domain-Driven Design (DDD) mimarisi prensiplerine göre yapılandırılmıştır.
 
-## DDD Katmanları
+## Mimari Katmanları
 
 ### 1. Domain Layer (app/Domain/)
-İş mantığının ve domain kurallarının bulunduğu ana katman.
+Domain katmanı, iş mantığının kalbidir ve hiçbir framework bağımlılığı içermez.
 
 #### Entities
 - **User**: Kullanıcı domain entity'si
-- **Value Objects**: Name, Email, Password gibi değer nesneleri
-- **Exceptions**: Domain-specific exception'lar
+- Value Objects ile güçlendirilmiş
+- Eloquent'ten türetilmemiş, saf domain objesi
+
+#### Value Objects
+- **Name**: İsim değer objesi
+- **Email**: Email değer objesi  
+- **Password**: Şifre değer objesi
 
 #### Services
 - **AuthService**: Kimlik doğrulama iş mantığı
+- Domain kurallarını uygular
+- Infrastructure detaylarından bağımsız
 
 #### Repositories (Interfaces)
-- **UserRepositoryInterface**: User repository contract'ı
+- **UserRepositoryInterface**: Kullanıcı veri erişim sözleşmesi
+
+#### Exceptions
+- **InvalidCredentialsException**: Geçersiz kimlik bilgileri
+- **UserNotFoundException**: Kullanıcı bulunamadı
 
 ### 2. Application Layer (app/Application/)
-Use case'leri ve application logic'i içerir.
+Uygulama servisleri ve DTO'lar burada bulunur.
 
 #### DTOs
 - **LoginResponseDTO**: Giriş yanıt veri transfer objesi
@@ -27,89 +38,86 @@ Use case'leri ve application logic'i içerir.
 - **UserResponseDTO**: Kullanıcı yanıt veri transfer objesi
 
 ### 3. Infrastructure Layer (app/Infrastructure/)
-External concerns ve technical implementation'ları içerir.
+Framework ve dış servislerle entegrasyon burada bulunur.
+
+#### Models
+- **BaseModel**: Tüm Infrastructure modeller için base class
+- **User**: Eloquent User modeli (Infrastructure katmanında)
+- Laravel Sanctum, Eloquent özellikleri burada
 
 #### Repositories
-- **UserRepository**: UserRepositoryInterface'in concrete implementation'ı
+- **UserRepository**: UserRepositoryInterface implementasyonu
+- Eloquent modelleri kullanarak veri erişimi
+- Domain entity'leri ile Infrastructure arasında köprü
 
-### 4. Presentation Layer (app/Http/)
-HTTP isteklerini karşılayan ve response'ları dönen katman.
+### 4. Http Layer (app/Http/)
+Web arayüzü ve API endpoint'leri.
 
 #### Controllers
-- **AuthController**: Sadece HTTP isteklerini alır ve domain service'lere yönlendirir
+- **AuthController**: Kimlik doğrulama API endpoint'leri
+- Application katmanındaki DTO'ları kullanır
+
+#### Requests
+- **LoginRequest**: Giriş isteği validasyonu
+- **RegisterRequest**: Kayıt isteği validasyonu
 
 ## DDD Prensipleri
 
 ### 1. Separation of Concerns
 - Her katman kendi sorumluluğuna sahip
-- Controller'lar sadece HTTP ile ilgilenir
-- Domain logic domain layer'da
-- Infrastructure concerns ayrı
+- Domain katmanı framework'ten bağımsız
+- Infrastructure detayları Domain'e sızamaz
 
 ### 2. Dependency Inversion
-- Domain layer hiçbir external dependency'e sahip değil
-- Repository interface'leri domain'de tanımlanır
-- Concrete implementation'lar infrastructure'da
+- Domain katmanı Infrastructure'a bağımlı değil
+- Repository pattern ile soyutlama
+- Interface'ler üzerinden bağımlılık
 
 ### 3. Value Objects
-- Name, Email, Password gibi değerler value object olarak tanımlanır
-- Immutable ve validation logic'i içerir
-- Domain kurallarını enforce eder
+- Primitive obsession'ı önler
+- Domain kurallarını kapsüller
+- Immutable ve type-safe
 
-### 4. Domain Entities
-- User entity'si domain logic'i içerir
-- Business rules'ları enforce eder
-- Value object'leri kullanır
+### 4. Repository Pattern
+- Veri erişim soyutlaması
+- Domain entity'leri Infrastructure'dan izole eder
+- Test edilebilirliği artırır
+
+## Kullanım Örnekleri
+
+### Token Oluşturma
+```php
+// Infrastructure katmanında
+$userModel = UserModel::find($userId);
+$tokenResult = $userModel->createToken('auth_token');
+$plainToken = $tokenResult->plainTextToken;
+
+// Domain katmanında
+$user = new User(['name' => 'John', 'email' => 'john@example.com']);
+```
+
+### Repository Kullanımı
+```php
+// Interface üzerinden
+$user = $this->userRepository->findByEmail($email);
+
+// Infrastructure implementasyonu
+$userModel = UserModel::where('email', $email->getValue())->first();
+return $userModel->toDomainEntity();
+```
 
 ## Avantajlar
 
-1. **Maintainability**: Kod daha organize ve bakımı kolay
-2. **Testability**: Her katman bağımsız olarak test edilebilir
-3. **Scalability**: Yeni özellikler eklemek daha kolay
-4. **Business Logic**: İş mantığı domain layer'da merkezi olarak yönetilir
-5. **Flexibility**: Infrastructure değişiklikleri domain'i etkilemez
+1. **Test Edilebilirlik**: Domain logic framework'ten bağımsız test edilebilir
+2. **Maintainability**: Kod organizasyonu ve sorumluluk ayrımı
+3. **Scalability**: Yeni özellikler kolayca eklenebilir
+4. **Framework Independence**: Domain logic framework değişikliklerinden etkilenmez
+5. **Team Collaboration**: Farklı ekipler farklı katmanlarda çalışabilir
 
-## Kullanım
+## Best Practices
 
-### Controller'da
-```php
-public function register(RegisterRequest $request): JsonResponse
-{
-    try {
-        $result = $this->authService->register(
-            $request->name,
-            $request->email,
-            $request->password
-        );
-        
-        $responseDTO = new RegisterResponseDTO($result['user'], $result['token']);
-        return response()->json($responseDTO->toArray(), 201);
-    } catch (\Exception $e) {
-        // Error handling
-    }
-}
-```
-
-### Domain Service'de
-```php
-public function register(string $name, string $email, string $password): array
-{
-    $nameValueObject = new Name($name);
-    $emailValueObject = new Email($email);
-    $passwordValueObject = new Password($password);
-    
-    // Business logic
-    $user = new User($nameValueObject, $emailValueObject, $passwordValueObject);
-    $savedUser = $this->userRepository->save($user);
-    
-    return ['user' => $savedUser, 'token' => $token];
-}
-```
-
-## Sonraki Adımlar
-
-1. **Event Sourcing**: Domain event'leri eklenebilir
-2. **CQRS**: Command ve Query separation
-3. **Aggregate Pattern**: Complex domain logic için
-4. **Specification Pattern**: Complex query logic için
-5. **Unit of Work**: Transaction management
+1. **Domain katmanında framework kodu bulundurmayın**
+2. **Value Objects kullanarak primitive obsession'ı önleyin**
+3. **Repository pattern ile veri erişimi soyutlayın**
+4. **Exception'ları domain seviyesinde tanımlayın**
+5. **DTO'lar ile veri transferini standartlaştırın**

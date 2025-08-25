@@ -17,17 +17,19 @@ class User
 
     public function __construct(array $attributes = [])
     {
-        if (isset($attributes['name'])) {
-            $this->name = new Name($attributes['name']);
+        if (!isset($attributes['name'])) {
+            throw new \InvalidArgumentException('Name is required');
+        }
+        if (!isset($attributes['email'])) {
+            throw new \InvalidArgumentException('Email is required');
+        }
+        if (!isset($attributes['password'])) {
+            throw new \InvalidArgumentException('Password is required');
         }
 
-        if (isset($attributes['email'])) {
-            $this->email = new Email($attributes['email']);
-        }
-
-        if (isset($attributes['password'])) {
-            $this->password = new Password($attributes['password']);
-        }
+        $this->name = new Name($attributes['name']);
+        $this->email = new Email($attributes['email']);
+        $this->password = new Password($attributes['password']);
 
         if (isset($attributes['id'])) {
             $this->id = $attributes['id'];
